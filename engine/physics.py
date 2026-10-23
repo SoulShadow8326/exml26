@@ -35,9 +35,10 @@ def resolve_ramp_collisions(spheres, ramps):
     for sphere in spheres:
         if not sphere.alive:
             continue
-        if any(r.height_at(sphere.x, sphere.y) is not None for r in ramps):
-            continue
         for ramp in ramps:
+            h = ramp.height_at(sphere.x, sphere.y)
+            if h is not None and sphere.z - SPHERE_RADIUS >= h - 1e-6:
+                continue
             lethal_height = ramp.height * RAMP_LETHAL_HEIGHT_FRACTION
             for (ax, ay), (bx, by) in ramp.solid_edges():
                 dist, cxp, cyp = distance_point_to_segment(
